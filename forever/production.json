@@ -1,0 +1,8 @@
+[
+  {
+    "uid": "src",
+    "append": true,
+    "script": "src/bin/www",
+    "args": []
+  }
+]

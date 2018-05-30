@@ -1,0 +1,10 @@
+[
+  {
+    "uid": "src",
+    "append": true,
+    "watch": true,
+    "watchDirectory": "src",
+    "script": "src/bin/www",
+    "args": []
+  }
+]

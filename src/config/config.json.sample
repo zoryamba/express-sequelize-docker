@@ -1,0 +1,16 @@
+{
+  "development": {
+    "username": "kross-certificates",
+    "password": "securepassword",
+    "database": "kross-certificates",
+    "host": "db",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "kross-certificates",
+    "password": "securepassword",
+    "database": "kross-certificates",
+    "host": "db",
+    "dialect": "postgres"
+  }
+}

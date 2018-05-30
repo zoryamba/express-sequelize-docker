@@ -1,0 +1,61 @@
+version: "2.1"
+services:
+
+  db:
+    image: postgres:10.4
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./.pgpass:/home/postgres/.pgpass
+      - ./logs/postgresql:/var/log/postgresql
+    networks:
+      - default #required to get access to db from host machine. dev feature. remove in prod
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 20s
+      timeout: 20s
+      retries: 5
+    environment:
+      POSTGRES_USER: kross-certificates
+      POSTGRES_DB: kross-certificates
+      POSTGRES_PASSWORD_FILE: /home/postgres/.pgpass
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+
+  node:
+    build: .
+    image: kross-certificates-node
+    ports:
+      - 8080:8080
+    volumes:
+      - ./src:/home/node/app/src
+      - ./logs/forever:/logs
+    networks:
+      - internal
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development        # development|production
+      DEBUG: ''                    # use '*' for debugging
+      PORT: 8080                   # default: 8080
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./logs/nginx:/var/log/nginx
+    networks:
+      - default
+      - internal
+    depends_on:
+      - node
+    restart: always
+
+networks:
+  internal:
+    internal: true
